@@ -13,13 +13,11 @@ class BasePage:
         self.browser.get(self.url)
 
     def search(self, keyword):
+        WebDriverWait(self.browser, 10).until(
+            EC.presence_of_element_located(BasePageLocators.SEARCH_FIELD)
+        )
         self.browser.find_element(*BasePageLocators.SEARCH_FIELD).send_keys(keyword)
         self.browser.find_element(*BasePageLocators.SEARCH_FIELD).submit()
-        # WebDriverWait(self.browser, 10).until(
-        #     EC.element_to_be_clickable(BasePageLocators.SEARCH_BTN)
-        # )
-        # self.browser.find_element(*BasePageLocators.SEARCH_BTN).click()
-        # self.browser.find_element(*BasePageLocators.SEARCH_FIELD).send_keys(keyword + Keys.RETURN)
 
     def is_element_present(self, method, selector):
         try:

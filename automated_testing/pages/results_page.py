@@ -51,10 +51,6 @@ class SearchResultsPage(BasePage):
         results = self.browser.find_elements(*SearchResultsPageLocators.RESULT_LINKS)
         result_text = [result.text.lower() for result in results if result.text.strip()]
 
-        # Отладочный вывод
-        for result in result_text[:5]:
-            print(result)
-
         for result in result_text[:5]:
             assert re.search(pattern, result), f"Ключевое слово '{keyword}' не найдено в выдаче ссылок: {result_text[:5]}"
 
@@ -65,10 +61,6 @@ class SearchResultsPage(BasePage):
 
         results = self.browser.find_elements(*SearchResultsPageLocators.SNIPPETS)
         result_text = [self.clean_text(result.text.lower()) for result in results if result.text.strip()]
-
-        # Отладочный вывод
-        for result in result_text[:5]:
-            print(result)
 
         for result in result_text[:5]:
             assert keyword.lower() in result, \
@@ -83,10 +75,6 @@ class SearchResultsPage(BasePage):
 
         results = self.browser.find_elements(*SearchResultsPageLocators.SNIPPETS)
         result_text = [self.clean_text(result.text.lower()) for result in results if result.text.strip()]
-
-        # Отладочный вывод
-        for result in result_text[:5]:
-            print(result)
 
         for result in result_text[:5]:
             assert re.search(pattern, result), f"Ключевое слово '{keyword}' не найдено в сниппетах: {result_text[:5]}"
