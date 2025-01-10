@@ -7,5 +7,5 @@ class BasePageLocators():
 
 
 class SearchResultsPageLocators():
-    RESULT_LINKS = (By.CSS_SELECTOR, 'h3')
+    RESULT_LINKS = (By.CSS_SELECTOR, 'a h3')
     SNIPPETS = (By.CSS_SELECTOR, '[data-sncf="1"] em')

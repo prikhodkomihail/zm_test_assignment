@@ -37,7 +37,7 @@ class SearchResultsPage(BasePage):
 
         for result in result_text[:5]:
             assert keyword.lower() in result, \
-                f"Точное совпадение ключевого слова '{keyword}' не найдено в выдаче ссылок: {result_text}"
+                f"Точное совпадение ключевого слова '{keyword}' не найдено в выдаче ссылок: {result_text[:5]}"
 
     def check_keyword_in_results(self, keyword):
         # Составляем регулярное выражение
@@ -56,7 +56,7 @@ class SearchResultsPage(BasePage):
             print(result)
 
         for result in result_text[:5]:
-            assert re.search(pattern, result), f"Ключевое слово '{keyword}' не найдено в выдаче ссылок: {result_text}"
+            assert re.search(pattern, result), f"Ключевое слово '{keyword}' не найдено в выдаче ссылок: {result_text[:5]}"
 
     def check_exact_snippets_in_results(self, keyword):
         WebDriverWait(self.browser, 10).until(
@@ -72,7 +72,7 @@ class SearchResultsPage(BasePage):
 
         for result in result_text[:5]:
             assert keyword.lower() in result, \
-                f"Точное совпадение ключевого слова '{keyword}' не найдено в сниппетах: {result_text}"
+                f"Точное совпадение ключевого слова '{keyword}' не найдено в сниппетах: {result_text[:5]}"
 
     def check_snippets_in_results(self, keyword):
         WebDriverWait(self.browser, 10).until(
@@ -89,7 +89,7 @@ class SearchResultsPage(BasePage):
             print(result)
 
         for result in result_text[:5]:
-            assert re.search(pattern, result), f"Ключевое слово '{keyword}' не найдено в сниппетах: {result_text}"
+            assert re.search(pattern, result), f"Ключевое слово '{keyword}' не найдено в сниппетах: {result_text[:5]}"
 
     def check_results_for_keyword_exclusion(self, exclude_keyword):
         WebDriverWait(self.browser, 10).until(
@@ -100,10 +100,10 @@ class SearchResultsPage(BasePage):
         result_text = [result.text.lower() for result in results if result.text.strip()]
         for result in result_text[:5]:
             assert exclude_keyword.lower() not in result, \
-                f"Исключенное слово '{exclude_keyword}' найдено в выдаче ссылок: {result_text}"
+                f"Исключенное слово '{exclude_keyword}' найдено в выдаче ссылок: {result_text[:5]}"
 
         snippets = self.browser.find_elements(*SearchResultsPageLocators.SNIPPETS)
         snippets_text = [self.clean_text(snippet.text.lower()) for snippet in snippets if snippet.text.strip()]
         for snippet in snippets_text[:5]:
             assert exclude_keyword.lower() not in snippet, \
-                f"Исключенное слово '{exclude_keyword}' найдено в выдаче сниппетов: {snippets_text}"
+                f"Исключенное слово '{exclude_keyword}' найдено в выдаче сниппетов: {snippets_text[:5]}"

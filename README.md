@@ -10,23 +10,18 @@
 
 *   **Язык программирования:** Python
 *   **Фреймворк для автоматизации:** Selenium
-*   **Браузер:** Chrome
+*   **Браузер:** Chrome, Firefox
 
 ## Запуск тестов
-
-### Ручное тестирование
-
-Отчет по ручному тестированию доступен в файле .
-
-### Автоматизированное тестирование
 
 Для запуска автоматизированных тестов необходимо:
 
 1.  Установить зависимости: `pip install -r requirements.txt`.
-2.  Запустить тесты: .
-
-Отчет по автоматизированному тестированию доступен в файле [automated-tests/test-report.md](automated-tests/test-report.md).
-
+2.  Запустить тесты: pytest -v --tb=line -m smoke.
+3.  Для запуска тестов только в Chrome: pytest -v --tb=line -m smoke -k "chrome"
+4.  Для запуска тестов только в Firefox: pytest -v --tb=line -m smoke -k "firefox"
+5.  Для запуска с генерацией отчета: pytest --html=reports/report.html --self-contained-html
+  
 ## Результаты
 
-*   
+[Отчет по автоматизации тестирования](./reports/report.html) доступен для просмотра.
