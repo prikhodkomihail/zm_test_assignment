@@ -34,7 +34,6 @@ def browser(request):
         raise ValueError(f"Браузер {browser_name} не поддерживается")
 
     browser.set_window_size(width, height)
-    browser.implicitly_wait(10)
     yield browser
     browser.quit()
 

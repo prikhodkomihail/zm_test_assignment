@@ -9,7 +9,12 @@ from selenium.webdriver.support import expected_conditions as EC
 
 class SearchResultsPage(BasePage):
     def check_results_exist(self):
-        assert self.is_element_present(*SearchResultsPageLocators.RESULT_LINKS), "Результаты поиска не отображаются"
+        WebDriverWait(self.browser, 10).until(
+            EC.presence_of_all_elements_located(SearchResultsPageLocators.RESULT_LINKS)
+        )
+
+        results = self.browser.find_elements(*SearchResultsPageLocators.RESULT_LINKS)
+        assert results, "Результаты поиска не отображаются"
 
     def check_browser_title(self, keyword):
         assert keyword in self.browser.title, \
@@ -22,7 +27,7 @@ class SearchResultsPage(BasePage):
         clean_text = soup.get_text() if soup else text  # Обрабатываем None
         clean_text = clean_text.replace("\xa0", " ")
         clean_text = re.sub(r'\s+', ' ', clean_text)
-        clean_text = unicodedata.normalize('NFKD', clean_text)  # Нормализация NFKD
+        clean_text = unicodedata.normalize('NFKD', clean_text)
         clean_text = "".join([c for c in clean_text if unicodedata.category(c) != 'Mn'])  # Удаляем знаки модификации
         clean_text = clean_text.strip().lower()
         return clean_text
