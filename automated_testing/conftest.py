@@ -9,8 +9,14 @@ def browser():
     options.add_argument('--ignore-certificate-errors')
     options.add_argument('--ignore-ssl-errors')
     options.add_argument('--disable-web-security')
+    options.add_argument("--disable-extensions")
+    options.add_argument('--blink-settings=imagesEnabled=false')
     browser = webdriver.Chrome(options=options)
 
     browser.implicitly_wait(10)
     yield browser
     browser.quit()
+
+
+def pytest_configure(config):
+    config.addinivalue_line("markers", "smoke: проверка основной функциональности")
