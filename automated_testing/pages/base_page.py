@@ -1,3 +1,4 @@
+from ..pages.locators import BasePageLocators
 
 
 class BasePage:
@@ -8,6 +9,10 @@ class BasePage:
 
     def open(self):
         self.browser.get(self.url)
+
+    def search(self, keyword):
+        self.browser.find_element(*BasePageLocators.SEARCH_FIELD).send_keys(keyword)
+        self.browser.find_element(*BasePageLocators.SEARCH_BTN).click()
 
     def is_element_present(self, method, selector):
         try:
