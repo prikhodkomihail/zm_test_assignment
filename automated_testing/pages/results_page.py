@@ -42,7 +42,7 @@ class SearchResultsPage(BasePage):
     def check_keyword_in_results(self, keyword):
         # Составляем регулярное выражение
         # \b - границы слова, чтобы избежать совпадений внутри других слов
-        pattern = rf"\b{re.escape(keyword[:-2])}[а-яё]*\b"  # Убираем последние 2 буквы, добавляем любую последовательность букв
+        pattern = rf"\b{re.escape(keyword.lower()[:-2])}[а-яё]*\b"  # Убираем последние 2 буквы, добавляем любую последовательность букв
 
         WebDriverWait(self.browser, 10).until(
             EC.presence_of_all_elements_located(SearchResultsPageLocators.RESULT_LINKS)
@@ -79,7 +79,7 @@ class SearchResultsPage(BasePage):
             EC.presence_of_all_elements_located(SearchResultsPageLocators.RESULT_LINKS)
         )
 
-        pattern = rf"\b{re.escape(keyword[:-2])}[а-яё]*\b"
+        pattern = rf"\b{re.escape(keyword.lower()[:-2])}[а-яё]*\b"
 
         results = self.browser.find_elements(*SearchResultsPageLocators.SNIPPETS)
         result_text = [self.clean_text(result.text.lower()) for result in results if result.text.strip()]

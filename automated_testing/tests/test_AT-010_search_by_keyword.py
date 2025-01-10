@@ -4,9 +4,9 @@ import pytest
 
 
 @pytest.mark.smoke
-def test_search_by_keyword(browser):
+@pytest.mark.parametrize("keyword", ["тестирование", "ТеСтИрОвАнИе"], ids=["lowercase", "mixedcase"])
+def test_search_by_keyword(browser, keyword):
     link = "https://www.google.com/"
-    keyword = "тестирование"
 
     base_page = BasePage(browser, link)
     base_page.open()
