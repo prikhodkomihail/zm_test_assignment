@@ -8,3 +8,10 @@ class BasePage:
 
     def open(self):
         self.browser.get(self.url)
+
+    def is_element_present(self, method, selector):
+        try:
+            self.browser.find_element(method, selector)
+        except:
+            return False
+        return True
