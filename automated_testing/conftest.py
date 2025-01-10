@@ -25,7 +25,7 @@ def browser(request):
 
     if browser_name == "chrome":
         options = Options()
-        options.add_argument('--blink-settings=imagesEnabled=false')
+#        options.add_argument('--blink-settings=imagesEnabled=false')
         browser = webdriver.Chrome(options=options)
     elif browser_name == "firefox":
         firefox_options = FirefoxOptions()

@@ -25,3 +25,7 @@
 ## Результаты
 
 [Отчет по автоматизации тестирования](./reports/report.html) доступен для просмотра.
+
+## Важный комментарий
+Если тесты в Chrome не проходят из-за "бесконечной загрузки", то необходимо расскоментировать строку 28 с параметром
+options.add_argument('--blink-settings=imagesEnabled=false') в файле [conftest.py](./automated_testing/conftest.py)
