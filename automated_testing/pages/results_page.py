@@ -3,6 +3,8 @@ from ..pages.locators import SearchResultsPageLocators
 import re
 from bs4 import BeautifulSoup
 import unicodedata
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 
 class SearchResultsPage(BasePage):
@@ -14,29 +16,37 @@ class SearchResultsPage(BasePage):
             f"Название страницы {self.browser.title} не соответствует ключевому слову '{keyword}'"
 
     def clean_text(self, text):
-        # Убираем все HTML-теги
-        soup = BeautifulSoup(text, "html.parser")
-        clean_text = soup.get_text()
-
-        # Заменяем неразрывные пробелы на обычные
+        if text is None:
+            return ""
+        soup = BeautifulSoup(text, "html.parser") if text else None
+        clean_text = soup.get_text() if soup else text  # Обрабатываем None
         clean_text = clean_text.replace("\xa0", " ")
-
-        # Заменяем множественные пробелы на один
         clean_text = re.sub(r'\s+', ' ', clean_text)
+        clean_text = unicodedata.normalize('NFKD', clean_text)  # Нормализация NFKD
+        clean_text = "".join([c for c in clean_text if unicodedata.category(c) != 'Mn'])  # Удаляем знаки модификации
+        clean_text = clean_text.strip().lower()
+        return clean_text
 
-        # Убираем акценты (нормализация)
-        # Только удаляем акценты, если это необходимо для корректного поиска
-        clean_text = unicodedata.normalize('NFKD', clean_text).encode('ASCII', 'ignore').decode('ASCII')
+    def check_exact_keyword_in_results(self, keyword):
+        WebDriverWait(self.browser, 10).until(
+            EC.presence_of_all_elements_located(SearchResultsPageLocators.RESULT_LINKS)
+        )
 
-        # Убираем ведущие и завершающие пробелы
-        clean_text = clean_text.strip()
+        results = self.browser.find_elements(*SearchResultsPageLocators.RESULT_LINKS)
+        result_text = [result.text.lower() for result in results if result.text.strip()]
 
-        return clean_text.lower()
+        for result in result_text[:5]:
+            assert keyword.lower() in result, \
+                f"Точное совпадение ключевого слова '{keyword}' не найдено в выдаче ссылок: {result_text}"
 
     def check_keyword_in_results(self, keyword):
         # Составляем регулярное выражение
         # \b - границы слова, чтобы избежать совпадений внутри других слов
         pattern = rf"\b{re.escape(keyword[:-2])}[а-яё]*\b"  # Убираем последние 2 буквы, добавляем любую последовательность букв
+
+        WebDriverWait(self.browser, 10).until(
+            EC.presence_of_all_elements_located(SearchResultsPageLocators.RESULT_LINKS)
+        )
 
         results = self.browser.find_elements(*SearchResultsPageLocators.RESULT_LINKS)
         result_text = [result.text.lower() for result in results if result.text.strip()]
@@ -46,15 +56,36 @@ class SearchResultsPage(BasePage):
             print(result)
 
         for result in result_text[:5]:
-            assert re.search(pattern, result), f"Ключевое слово '{keyword}' не найдено в результате: {result_text}"
+            assert re.search(pattern, result), f"Ключевое слово '{keyword}' не найдено в выдаче ссылок: {result_text}"
 
-    def check_snippets_in_results(self, keyword):
+    def check_exact_snippets_in_results(self, keyword):
+        WebDriverWait(self.browser, 10).until(
+            EC.presence_of_all_elements_located(SearchResultsPageLocators.RESULT_LINKS)
+        )
+
         results = self.browser.find_elements(*SearchResultsPageLocators.SNIPPETS)
-        result_text = [self.clean_text(result.get_attribute('innerHTML')) for result in results]
+        result_text = [self.clean_text(result.text.lower()) for result in results if result.text.strip()]
 
         # Отладочный вывод
         for result in result_text[:5]:
             print(result)
 
         for result in result_text[:5]:
-            assert keyword.lower() in result, f"Ключевое слово '{keyword}' не найдено в сниппетах: {result_text}"
+            assert keyword.lower() in result, f"Точное совпадение ключевого слова '{keyword}' не найдено в сниппетах: {result_text}"
+
+    def check_snippets_in_results(self, keyword):
+        WebDriverWait(self.browser, 10).until(
+            EC.presence_of_all_elements_located(SearchResultsPageLocators.RESULT_LINKS)
+        )
+
+        pattern = rf"\b{re.escape(keyword[:-2])}[а-яё]*\b"
+
+        results = self.browser.find_elements(*SearchResultsPageLocators.SNIPPETS)
+        result_text = [self.clean_text(result.text.lower()) for result in results if result.text.strip()]
+
+        # Отладочный вывод
+        for result in result_text[:5]:
+            print(result)
+
+        for result in result_text[:5]:
+            assert re.search(pattern, result), f"Ключевое слово '{keyword}' не найдено в сниппетах: {result_text}"
