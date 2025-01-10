@@ -18,8 +18,8 @@
 
 1.  Установить зависимости: `pip install -r requirements.txt`.
 2.  Запустить тесты: pytest -v --tb=line -m smoke.
-3.  Для запуска тестов только в Chrome: pytest -v --tb=line -m smoke -k "chrome"
-4.  Для запуска тестов только в Firefox: pytest -v --tb=line -m smoke -k "firefox"
+3.  Для запуска тестов с фильтрацией: pytest -v --tb=line -m smoke -k "<параметр фильтрации>, например chrome"
+4.  Для запуска нескольких тестов параллельно: pytest -v --tb=line -m smoke -n auto
 5.  Для запуска с генерацией отчета: pytest --html=reports/report.html --self-contained-html
   
 ## Результаты
